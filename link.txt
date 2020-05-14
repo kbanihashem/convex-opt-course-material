@@ -1,0 +1,1 @@
+http://stanford.edu/~boyd/cvxbook/cvxbook_additional_exercises/
