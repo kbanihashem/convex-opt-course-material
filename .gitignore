@@ -1,0 +1,7 @@
+.DS_STORE
+.*.swp
+.ipynb_checkpoints
+code/__pycache__/
+__pycache__/
+*.dat
+comp/
