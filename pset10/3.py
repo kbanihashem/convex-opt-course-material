@@ -22,11 +22,10 @@ if p1.status == 'optimal':
     f_values = np.matmul(A, x.value) - b
     satisfied = f_values <= epsilon
     satisfied_count = satisfied.sum()
-    print(satisfied_count)
-    print(k)
+    print(f"satisfied count: {satisfied_count}")
     #part b
     smallest_indexes = np.argsort(f_values)[:k]
     constraints = [A[smallest_indexes,:] @ x <= b[smallest_indexes]]
     p2 = cp.Problem(obj, constraints) 
     p2.solve()
-    print(f'objective value: {p2.value:.4f}')
+    print(f'Improved objective value: {p2.value:.4f}')

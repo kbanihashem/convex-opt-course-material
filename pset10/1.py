@@ -12,6 +12,7 @@ def a():
     constraints = [cp.norm(cp.vstack([x + 2 * y, x - y])) <= 0]
     problem = cp.Problem(obj, constraints)
     print(f"a after: {problem.is_dcp()}")
+    problem.solve()
 
 def b():
     x = cp.Variable()
@@ -20,6 +21,7 @@ def b():
     constraints = [cp.square(cp.square(x + y)) <= x - y]
     problem = cp.Problem(obj, constraints)
     print(f"b before and after!: {problem.is_dcp()}")
+    problem.solve()
 
 def c():
     x = cp.Variable()
@@ -32,9 +34,10 @@ def c():
     x = cp.Variable(nonneg=True)
     y = cp.Variable(nonneg=True)
     obj = cp.Minimize(0)
-    constraints = [cp.inv_pos(x) + cp.inv_pos(y) <=1]
+    constraints = [cp.inv_pos(x) + cp.inv_pos(y) <=1, x >= 0, y >= 0]
     problem = cp.Problem(obj, constraints)
     print(f"c after: {problem.is_dcp()}")
+    problem.solve()
 
 def d():
     x = cp.Variable()
@@ -58,6 +61,7 @@ def d():
             ]
     problem = cp.Problem(obj, constraints)
     print(f"d after: {problem.is_dcp()}")
+    problem.solve()
 
 def e():
     x = cp.Variable()
@@ -75,11 +79,12 @@ def e():
     y = cp.Variable()
     obj = cp.Minimize(0)
     constraints = [
-            cp.inv_pos(y) - x,
+            cp.inv_pos(y) - x <= 1,
             x >= 0,
             ]
     problem = cp.Problem(obj, constraints)
     print(f"e after: {problem.is_dcp()}")
+    problem.solve()
 
 def f():
     x = cp.Variable()
@@ -103,6 +108,7 @@ def f():
             ]
     problem = cp.Problem(obj, constraints)
     print(f"f after: {problem.is_dcp()}")
+    problem.solve()
 
 def g():
     x = cp.Variable()
@@ -138,6 +144,7 @@ def h():
             ]
     problem = cp.Problem(obj, constraints)
     print(f"h after: {problem.is_dcp()}")
+    problem.solve()
 
 a()
 b()
