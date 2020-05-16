@@ -139,41 +139,6 @@ def h():
     problem = cp.Problem(obj, constraints)
     print(f"h after: {problem.is_dcp()}")
 
-def compare_h_with_sol():
-    print(f"comparing h with sol")
-    #Mine
-    x = cp.Variable()
-    y = cp.Variable()
-    z = cp.Variable()
-    t = cp.Variable()
-    obj1 = cp.Minimize(x**2 + y**2 + z**2)
-    obj2 = cp.Minimize(x**2/3 + cp.inv_pos(y) - 5 * z + cp.quad_over_lin(x, z) + cp.quad_over_lin(y, z) + cp.quad_over_lin(x, y))
-    constraints = [
-            x + z - 1 <= t,
-            cp.norm(cp.vstack([z, t])) <= cp.geo_mean(cp.vstack([x, y])),
-            x >= 0,
-            y >= 0,
-            ]
-    for i, obj in enumerate([obj1, obj2]):
-        problem = cp.Problem(obj, constraints)
-        problem.solve()
-        print(f"problem {i + 1}: my result: status:{problem.status} obj_value:"
-                f"{problem.value:.2f}, x: {x.value:.2f}, y: {y.value:.2f}, z: {z.value:.2f}")
-    #sol
-    t = cp.quad_over_lin(z, y)
-    #b = x- t SHOULD work. But it doesn't!!!!!!! I think it's a cvxpy bug
-    b = cp.sum(x - t)
-    constraints = [
-            x + z <= 1 + cp.geo_mean(cp.vstack([y, b])),
-            x >= 0,
-            y >= 0,
-            ]
-    for i, obj in enumerate([obj1, obj2]):
-        problem = cp.Problem(obj, constraints)
-        problem.solve()
-        print(f"problem {i + 1}: sol result: status:{problem.status} obj_value:"
-                f"{problem.value:.2f}, x: {x.value:.2f}, y: {y.value:.2f}, z: {z.value:.2f}")
-
 a()
 b()
 c()
@@ -182,4 +147,3 @@ e()
 f()
 g()
 h()
-compare_h_with_sol()

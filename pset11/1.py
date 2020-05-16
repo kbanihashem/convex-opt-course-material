@@ -38,7 +38,10 @@ U_minus_L = upper_bound - lower_bound
 frac = lower_bound / upper_bound
 print(f"Upper bound: {upper_bound:.4f}, lower bound: {lower_bound:.4f}, U - L: {U_minus_L:.4f}, frac: {(frac * 100):.2f} %")
 
-plt.plot(t_values, obj_value, color='orange')
+feasible = maximum_violation <= 0
+plt.plot(t_values[feasible], obj_value[feasible], color='green')
+plt.plot(t_values[~feasible], obj_value[~feasible], color='red')
 plt.show()
-plt.plot(t_values, maximum_violation, color='blue')
+plt.plot(t_values[feasible], maximum_violation[feasible], color='green')
+plt.plot(t_values[~feasible], maximum_violation[~feasible], color='red')
 plt.show()
