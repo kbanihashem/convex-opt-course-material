@@ -1,7 +1,7 @@
 import numpy as np
 import cvxpy as cp
 
-from team_data import n, m, m_test, sigma, train, test
+from data.team_data import n, m, m_test, sigma, train, test
 np.set_printoptions(precision=4)
 #b
 print(n, m)
