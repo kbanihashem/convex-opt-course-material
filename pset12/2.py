@@ -18,7 +18,7 @@ for i, j in G:
     constraints.append(cp.norm(c[i] - c[j]) <= r[i] + r[j])
 
 a_and_b = {
-#        'Perimeter': cp.Minimize(2 * np.pi * cp.sum(r)),
+        'Perimeter': cp.Minimize(2 * np.pi * cp.sum(r)),
         'Area': cp.Minimize(np.pi * cp.sum_squares(r)),
         }
 
