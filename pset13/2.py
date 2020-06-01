@@ -40,7 +40,7 @@ def main():
                 (N_l if i == 0 else N_s) <= 0,
                 ]
         rho = rho_s if i == 0 else rho_l
-        obj = cp.Minimize(rho_s * cp.pos(N_s + N_l))
+        obj = cp.Minimize(rho * cp.pos(N_s + N_l))
         problem = cp.Problem(obj, constraints)
         problem.solve()
         if problem.status == 'optimal':
@@ -64,16 +64,17 @@ def main():
     best_s = li[0][2]
     print(f"best value: {best_value:.4f}")
     print(f"best s: {best_s}")
-    print(f"N_s = {N_s.value:.4f}, N_l={N_l.value:.4f}")
-    print(li[0][1], li[0][-1])
-    print(li[1][1], li[1][-1])
-    print(li[2][1], li[2][-1])
+#    print(f"N_s = {N_s.value:.4f}, N_l={N_l.value:.4f}")
+#    print(li[0][1], li[0][-1])
+#    print(li[1][1], li[1][-1])
+#    print(li[2][1], li[2][-1])
+    print("evaluating dumb s")
     dumb_s = C / np.sum(v) * v
     g = dumb_s * rates
     n_l = np.sum(g[:L])
     n_s = np.sum(g[L:])
     print(f"n_s: {n_s:.4f}, n_l: {n_l:.4f}")
     #we know it's positive
-    print(f"Dumb cost = {rho_s * n_s + rho_l * n_l :.4f}")
+    print(f"Dumb cost = {(rho_s * n_s + rho_l * n_l):.4f}")
 
 main()
