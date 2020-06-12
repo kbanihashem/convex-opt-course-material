@@ -13,8 +13,8 @@ M  = np.array([     3,      4,      6,      6,      9,     10]); # time to matur
 
 A  = np.zeros((T,n)); # A: (time x coupon_type) A=[a_{t,i}]
 for i in range(n):
-    A[1:M[i]-1,i] = C[i];
-    A[M[i],i] = C[i]+1;
+    A[:M[i]-1,i] = C[i];
+    A[M[i]-1,i] = C[i]+1;
 
 ###############################################################
 # computing bond prices

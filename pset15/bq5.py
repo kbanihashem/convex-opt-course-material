@@ -8,7 +8,7 @@ E = [0] + list(E)
 I = [0] + list(A @ x)
 B = [None] * (T + 1)
 B[0] = cp.Variable()
-for t in range(T + 1):
+for t in range(T):
     before = B[t] - E[t] + I[t]
     B[t + 1] = cp.minimum((1 + rp) * before, (1 + rn) * before)
 #B = cp.hstack(B)

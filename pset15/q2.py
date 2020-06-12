@@ -17,4 +17,4 @@ constraints = [
 obj = cp.Minimize(cp.max(cp.norm(K, axis=1)))
 problem = cp.Problem(obj, constraints)
 problem.solve()
-
+print(problem.value)

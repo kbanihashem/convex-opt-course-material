@@ -21,3 +21,5 @@ constraints = [
 obj = cp.Minimize(x @ P + B[0])
 problem = cp.Problem(obj, constraints)
 problem.solve()
+print("value: ", problem.value)
+print(f"optimal x: {x}")
