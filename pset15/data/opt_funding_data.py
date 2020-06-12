@@ -11,7 +11,7 @@ P  = np.array([0.9870, 0.9805, 0.9761, 0.9946, 0.9783, 0.9680]); # bond price
 M  = np.array([     3,      4,      6,      6,      9,     10]); # time to maturity
 
 
-A  = np.zeros(T,n); # A: (time x coupon_type) A=[a_{t,i}]
+A  = np.zeros((T,n)); # A: (time x coupon_type) A=[a_{t,i}]
 for i in range(n):
     A[1:M[i]-1,i] = C[i];
     A[M[i],i] = C[i]+1;
