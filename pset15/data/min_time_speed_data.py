@@ -4,15 +4,18 @@ import numpy as np
 N = 50; # number of intervals
 m = 1500; # mass of vehicle
 d = 200; # distance between knot points
-h = (100*sin((1:N+1)/(N+1)*5*pi/2+pi/4) + \
-    [zeros(1,10) -10*(1:10) +6*(1:31)-100])'; # elevation at knot points
+h = 100*np.sin(np.arange(1, N + 2)/(N+1)*5*np.pi/2 + np.pi/4) + \
+    np.hstack([np.zeros(10), -10*np.arange(1, 11), +6*np.arange(1, 32)-100]); # elevation at knot points
 eta = .26*35*10**6; # engine efficiency and energy content of the fuel
 
 rho = 1.2; # density of air, used in calculation of C_D
 A = 2.4; # effective frontal area used in calculation of C_D
 c_d = .5; #effective aerodynamic drag coefficient NOT C_D from the problem
 C_D = .5*rho*A*c_d; # coefficient of drag 
-clear rho A c_d;
+#clear rho A c_d;
+del rho
+del A
+del c_d
 
 P = 1500; # power of the onboard systems
 F = 2; # total initial fuel
