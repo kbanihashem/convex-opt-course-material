@@ -1,5 +1,6 @@
 import numpy as np
 import cvxpy as cp
+np.set_printoptions(precision=4, suppress=True)
 
 n = 3
 G = np.array([
@@ -17,4 +18,6 @@ constraints = [
 obj = cp.Minimize(cp.max(cp.norm(K, axis=1)))
 problem = cp.Problem(obj, constraints)
 problem.solve()
-print(problem.value)
+print("Optimal value: ", problem.value)
+F = Z.value.dot(np.linalg.inv(K.value))
+print(f"F: {F}")
