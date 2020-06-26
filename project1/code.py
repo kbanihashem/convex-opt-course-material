@@ -92,8 +92,10 @@ def lp(A, b, c):
 def partc():
     m = 100
     n = 500
-#    A, b, c = get_data_c(m, n, random_state=13)
-    A, b, c, _ = get_data(m, n)
+    #m, n = n, m
+    #A, b, c = get_data_c(m, n, random_state=13)
+    A, b, c = get_data_c_2(m, n, random_state=13)
+    #A, b, c, _ = get_data(m, n)
     status, x_star = lp(A, b, c)
     print(status)
     print(c @ x_star)
@@ -147,6 +149,19 @@ def centering_step(A, b, c, x0, epsilon=1e-8, alpha=0.1, beta=0.7):
     decremant_log = np.array(decremant_log)
     log = num_steps, decremant_log, f_log
     return x, w, log
+
+def get_data_c_2(m, n, random_state=0):
+    np.random.seed(random_state)
+    A = np.random.randn(m, n)
+    A[0] = np.abs(A[0]) 
+    x0 = np.abs(np.random.randn(n))
+    c = np.random.randn(n)
+    A *= 30
+    x0 *= 30
+    c *= 30
+
+    b = A @ x0
+    return A, b, c
 
 def get_data_c(m, n, random_state=0):
     np.random.seed(random_state)
