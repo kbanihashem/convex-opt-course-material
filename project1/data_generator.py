@@ -15,7 +15,7 @@ def get_data(m, n, method='normal', random_state=0, part='a'):
     A = get_random_array((m, n), method)
     A[0] = np.abs(A[0])
     c = get_random_array((n,), method)
-    if part == 'a':
+    if part == 'a' or part == 'b':
         x = get_random_array((n,), method, positive=True)
         b = A @ x
     if part == 'c':
@@ -26,7 +26,7 @@ def get_data(m, n, method='normal', random_state=0, part='a'):
 def solve_with_cvx(A, b, c, with_log=False):
     x = cp.Variable(c.shape)
     obj = cp.Minimize(
-            c @ x - cp.sum(cp.log(x)) else c @ x
+            c @ x - cp.sum(cp.log(x)) if with_log else c @ x
             )
     constraints = [A @ x == b, x >= 0]
     problem = cp.Problem(obj, constraints)
