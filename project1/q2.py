@@ -67,5 +67,4 @@ def eigth_twelve(should_plot=False, num_tests=1, random_state=0):
         plt.ylabel('beta')
         plt.colorbar()
         plt.show()
-    print(f_log)
 
