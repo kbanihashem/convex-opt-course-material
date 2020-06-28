@@ -13,36 +13,56 @@ def f(x, c):
 def grad(x, c):
     return (c - 1/x)
 
-def centering_step(A, b, c, x0, epsilon=1e-8, alpha=0.1, beta=0.7, infeasible_method=False):
+def infeasible_centering_step(A, b, c, x0, epsilon=1e-8, alpha=0.1, beta=0.7, max_step=50):
     x = x0.copy()
     log = {
-            'decremant': [],
-            'f_value': [],
+            'r_norm': [],
+            'r_primal_norm': [],
+            'r_dual_norm': [],
             }
     log['num_steps'] = 0
+    log['maxed_out_iterations_'] = False
+    m, n = A.shape
+    v = np.zeros(m)
+
+    def r_norm(x, v, gradient):
+        return np.linalg.norm(np.hstack([gradient + A.T @ v, A @ x - b]))
+
     while True:
         H_inverse_diag = x**2
-        gradient = grad(x, c)
-        #names follow page 673 of the book
+        #names follow slide 11-12
+        g = grad(x, c)
+        h = A @ x - b
+        #Some names follow page 673 of the book
         S = -(A * H_inverse_diag) @ A.T
-        b_tilde = A @ (H_inverse_diag * gradient)
+        b_tilde = -h + A @ (H_inverse_diag * g)
         w = np.linalg.solve(S, b_tilde)
-        delta_x = -H_inverse_diag * (gradient + A.T @ w)
-        decremant_squared = -delta_x @ gradient
-        #decremant_squared = (delta_x / H_inverse_diag) @ delta_x
-        log['decremant'].append(decremant_squared/2)
-        log['f_value'].append(f(x, c))
-        if decremant_squared/2 <= epsilon:
+
+        delta_x = -H_inverse_diag * (g + A.T @ w)
+        delta_v = w - v
+
+        base_r = r_norm(x, v, g)
+        if base_r <= epsilon:
             break
+        if log['num_steps'] >= max_step:
+            log['maxed_out_iterations_'] = True
+            break
+
+        log['r_norm'].append(base_r)
+        log['r_primal_norm'].append(np.linalg.norm([A @ x - b]))
+        log['r_dual_norm'].append(np.linalg.norm([gradient + A.T @ v]))
 
         log['num_steps'] += 1
         t = 1
-        dot_prod = gradient @ delta_x
-        while f(x + t*delta_x, c) > f(x, c) + alpha * t * dot_prod:
+        dot_prod = g @ delta_x
+        while r_norm(x + t*delta_x, v + t * delta_v, g) > (1 - alpha * t) * base_r:
             t *= beta
         x += t * delta_x
+        v += t * delta_v
     
     for name, arr in log.items():
+        if name[-1] == '-':
+            continue
         log[name] = np.array(arr)
 
     return x, w, log
@@ -104,3 +124,37 @@ def lp(A, b, c):
         return status, np.zeros(n)
     x_star, log = barrier(A, b, c, x0)
     return status, x_star
+
+def centering_step(A, b, c, x0, epsilon=1e-8, alpha=0.1, beta=0.7, infeasible_method=False):
+    x = x0.copy()
+    log = {
+            'decremant': [],
+            'f_value': [],
+            }
+    log['num_steps'] = 0
+    while True:
+        H_inverse_diag = x**2
+        gradient = grad(x, c)
+        #names follow page 673 of the book
+        S = -(A * H_inverse_diag) @ A.T
+        b_tilde = A @ (H_inverse_diag * gradient)
+        w = np.linalg.solve(S, b_tilde)
+        delta_x = -H_inverse_diag * (gradient + A.T @ w)
+        decremant_squared = -delta_x @ gradient
+        #decremant_squared = (delta_x / H_inverse_diag) @ delta_x
+        log['decremant'].append(decremant_squared/2)
+        log['f_value'].append(f(x, c))
+        if decremant_squared/2 <= epsilon:
+            break
+
+        log['num_steps'] += 1
+        t = 1
+        dot_prod = gradient @ delta_x
+        while f(x + t*delta_x, c) > f(x, c) + alpha * t * dot_prod:
+            t *= beta
+        x += t * delta_x
+    
+    for name, arr in log.items():
+        log[name] = np.array(arr)
+
+    return x, w, log
