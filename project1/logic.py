@@ -13,7 +13,7 @@ def f(x, c):
 def grad(x, c):
     return (c - 1/x)
 
-def infeasible_centering_step(A, b, c, x0, epsilon=1e-8, alpha=0.1, beta=0.7, max_step=50):
+def infeasible_centering_step(A, b, c, x0, epsilon=1e-8, alpha=0.1, beta=0.7, max_step=100):
     x = x0.copy()
     log = {
             'r_norm': [],
