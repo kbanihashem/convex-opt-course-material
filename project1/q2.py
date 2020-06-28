@@ -68,3 +68,52 @@ def eigth_twelve(should_plot=False, num_tests=1, random_state=0):
         plt.colorbar()
         plt.show()
 
+def nine_eight(should_plot=False, num_tests=1, random_state=0):
+    m = 100
+    n = 500
+    for i in range(num_tests):
+        print(f'{i + 1}th data point')
+        data = get_data(m, n, random_state=i + random_state, part='9-12')
+        A, b, c = data
+        x, log = infeasible_barrier(*data)
+
+        cvx_output = solve_with_cvx(A, b, c, with_log=False)
+        print(f'Our optimal value: {c @ x:.6f}')
+        print(f'CVX optimal value: {cvx_output["obj_value"]:.6f}')
+        cvx_x = cvx_output['x_value']
+        relative_error = l2(cvx_x - x) / l2(cvx_x)
+        print(f'Relative error: {relative_error:.6f}')
+
+        if should_plot:
+            plt.plot(log['cumalative_newton'], log['log_duality_gap'], linestyle='--', marker='o')
+            plt.suptitle('log of duality gap by cumalative newton steps')
+            plt.xlabel('cumalative_newton')
+            plt.ylabel('log_duality_gap')
+            plt.show()
+
+    if should_plot:
+        mu_values = np.linspace(1.1, 10, 10)
+        data = get_data(m, n, random_state=random_state, part='9-12')
+        total_steps = []
+        center_steps = []
+        print('evaluating mu')
+        for i, mu in enumerate(mu_values):
+            print('-', end='')
+            x, log = infeasible_barrier(*data, mu=mu)
+            total_steps.append(log['newton_steps'])
+            center_steps.append(log['center_steps'])
+        
+        plt.suptitle('newton steps by mu')
+        plt.xlabel('mu')
+        plt.ylabel('newton steps')
+        plt.scatter(mu_values, total_steps)
+        plt.plot(mu_values, total_steps)
+        plt.show()
+
+        plt.suptitle('centering steps by mu')
+        plt.xlabel('mu')
+        plt.ylabel('centering steps')
+        plt.scatter(mu_values, center_steps)
+        plt.plot(mu_values, center_steps)
+        plt.show()
+

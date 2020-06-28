@@ -13,6 +13,28 @@ def f(x, c):
 def grad(x, c):
     return (c - 1/x)
 
+def infeasible_barrier(A, b, c, mu=10, duality_threshold=1e-3, *args, **kwargs):
+    m, n = A.shape
+    x = np.ones(n)
+    log = dict()
+    log['center_steps'] = 0
+    log['newton_steps'] = 0
+    log['log_duality_gap'] = []
+    log['cumalative_newton'] = []
+    log['history'] = []
+    t = 1
+    while True:
+        x, w, log_center = infeasible_centering_step(A, b, t * c, x, *args, **kwargs)
+        log['center_steps'] += 1
+        log['newton_steps'] += log_center['num_steps']
+        log['log_duality_gap'].append(np.log(m / t))
+        log['cumalative_newton'].append(log['newton_steps'])
+        log['history'].append((log_center['num_steps'], m / t))
+        if m / t < duality_threshold:
+            break
+        t *= mu
+    return x, log
+
 def infeasible_centering_step(A, b, c, x0, epsilon=1e-8, alpha=0.4, beta=0.7, max_step=50):
     x = x0.copy()
     log = {

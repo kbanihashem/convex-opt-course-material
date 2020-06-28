@@ -15,12 +15,14 @@ def get_data(m, n, method='normal', random_state=0, part='a'):
     A = get_random_array((m, n), method)
     A[0] = np.abs(A[0])
     c = get_random_array((n,), method)
-    if part == 'a' or part == 'b':
+    if part == 'a' or part == 'b' or part == '9-12':
         x = get_random_array((n,), method, positive=True)
         b = A @ x
     if part == 'c':
         b = get_random_array((m,), method)
         x = np.zeros(n) 
+    if part == '9-12':
+        return A, b, c
     return A, b, c, x
 
 def solve_with_cvx(A, b, c, with_log=False):
