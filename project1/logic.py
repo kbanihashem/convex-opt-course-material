@@ -19,6 +19,7 @@ def infeasible_centering_step(A, b, c, x0, epsilon=1e-8, alpha=0.1, beta=0.7, ma
             'r_norm': [],
             'r_primal_norm': [],
             'r_dual_norm': [],
+            'f_value': [],
             }
     log['num_steps'] = 0
     log['maxed_out_iterations_'] = False
@@ -51,6 +52,7 @@ def infeasible_centering_step(A, b, c, x0, epsilon=1e-8, alpha=0.1, beta=0.7, ma
         log['r_norm'].append(base_r)
         log['r_primal_norm'].append(np.linalg.norm([A @ x - b]))
         log['r_dual_norm'].append(np.linalg.norm([gradient + A.T @ v]))
+        log['f_value'].append(f(x, c))
 
         log['num_steps'] += 1
         t = 1
