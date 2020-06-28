@@ -13,7 +13,7 @@ def f(x, c):
 def grad(x, c):
     return (c - 1/x)
 
-def infeasible_centering_step(A, b, c, x0, epsilon=1e-8, alpha=0.1, beta=0.7, max_step=100):
+def infeasible_centering_step(A, b, c, x0, epsilon=1e-8, alpha=0.4, beta=0.7, max_step=50):
     x = x0.copy()
     log = {
             'r_norm': [],
@@ -24,10 +24,13 @@ def infeasible_centering_step(A, b, c, x0, epsilon=1e-8, alpha=0.1, beta=0.7, ma
     log['num_steps'] = 0
     log['maxed_out_iterations_'] = False
     m, n = A.shape
-    v = np.zeros(m)
+    v = np.ones(m)
 
     def r_norm(x, v, gradient):
-        return np.linalg.norm(np.hstack([gradient + A.T @ v, A @ x - b]))
+        if np.any(x <= 0):
+            return np.inf
+        r = np.hstack([grad(x, c) + A.T @ v, A @ x - b])
+        return np.linalg.norm(r)
 
     while True:
         H_inverse_diag = x**2
@@ -36,7 +39,7 @@ def infeasible_centering_step(A, b, c, x0, epsilon=1e-8, alpha=0.1, beta=0.7, ma
         h = A @ x - b
         #Some names follow page 673 of the book
         S = -(A * H_inverse_diag) @ A.T
-        b_tilde = -h + A @ (H_inverse_diag * g)
+        b_tilde = A @ (H_inverse_diag * g) - h
         w = np.linalg.solve(S, b_tilde)
 
         delta_x = -H_inverse_diag * (g + A.T @ w)
@@ -51,13 +54,12 @@ def infeasible_centering_step(A, b, c, x0, epsilon=1e-8, alpha=0.1, beta=0.7, ma
 
         log['r_norm'].append(base_r)
         log['r_primal_norm'].append(np.linalg.norm([A @ x - b]))
-        log['r_dual_norm'].append(np.linalg.norm([gradient + A.T @ v]))
+        log['r_dual_norm'].append(np.linalg.norm([g + A.T @ v]))
         log['f_value'].append(f(x, c))
 
         log['num_steps'] += 1
         t = 1
-        dot_prod = g @ delta_x
-        while r_norm(x + t*delta_x, v + t * delta_v, g) > (1 - alpha * t) * base_r:
+        while r_norm(x + t * delta_x, v + t * delta_v, g) > (1 - alpha * t) * base_r:
             t *= beta
         x += t * delta_x
         v += t * delta_v

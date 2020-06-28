@@ -9,9 +9,10 @@ def eigth_twelve(should_plot=False, num_tests=1, random_state=0):
     for i in range(num_tests):
         print(f'{i + 1}th data point')
         data = get_data(m, n, random_state=i + random_state, part='a')
+        data = list(data)
+        data[-1] = np.ones(n)
         A, b, c, x0 = data
         x, w, log = infeasible_centering_step(*data)
-        f_log = log['f_value']
         r_primal_log = log['r_primal_norm']
         r_dual_log = log['r_dual_norm']
         r_log = log['r_norm']
@@ -20,7 +21,7 @@ def eigth_twelve(should_plot=False, num_tests=1, random_state=0):
 
         #evaluating kkt
         primal_slackness = np.max(np.abs(A @ x - b))
-        dual_slackness = np.max(np.abs(grad(x, c) + A.T @ w))
+        dual_slackness = np.linalg.norm(grad(x, c) + A.T @ w)
         print(f'maxed out iterations: {log["maxed_out_iterations_"]}')
         print(f'primal_slackness: {primal_slackness:.6f}')
         print(f'dual_slackness: {dual_slackness:.6f}')
@@ -35,16 +36,15 @@ def eigth_twelve(should_plot=False, num_tests=1, random_state=0):
         #plotting if necessary
         if should_plot:
             logs = {
-                    'f value': f_log[:-1] - f_log[-1],
                     'r norm': r_log,
-                    'r primal norm', r_primal_log,
-                    'r dual norm', r_dual_log,
+                    'r_primal norm': r_primal_log,
+                    'r_dual norm': r_dual_log,
                     }
-            for name, log in [r_primal_log, r_dual_log, r_log, f_log[:-1] - f_log[-1]]:
+            for name, log in logs.items():
                 num_iter = len(log)
-                plt.plot(np.arange(num_iter), np.log(log), marker = 'o', linestyle='--')
+                plt.plot(np.arange(num_iter), np.log(log), marker = 'o', linestyle='-')
                 plt.title(f'log of {name}')
-                plt.xlabel(iteration)
+                plt.xlabel('iteration')
                 plt.ylabel(f'log({name})')
                 plt.show()
     #observing the effects of alpha, beta
@@ -67,4 +67,5 @@ def eigth_twelve(should_plot=False, num_tests=1, random_state=0):
         plt.ylabel('beta')
         plt.colorbar()
         plt.show()
+    print(f_log)
 
