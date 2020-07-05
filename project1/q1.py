@@ -113,13 +113,19 @@ def partc(random_state=0, num_tests=1):
         n = 100
         data = get_data(m, n, part='c')
         status, x = lp(*data[:-1])
-        print(status)
+        print(f'our status: {status}')
+        A, b, c, x = data
+        cvx_output = solve_with_cvx(A, b, c, with_log=False)
+        print(f'cvx status: {cvx_output["status"]}')
         #infeasible4
         m = 100
         n = 500
         data = get_data(m, n, part='c') 
-        status, x= lp(*data[:-1])
-        print(status)
+        status, x = lp(*data[:-1])
+        print(f'our status: {status}')
+        A, b, c, x = data
+        cvx_output = solve_with_cvx(A, b, c, with_log=False)
+        print(f'cvx status: {cvx_output["status"]}')
         #feasible1
         A, b, c, x = get_data(m, n, part='a') 
         A = np.abs(A)
