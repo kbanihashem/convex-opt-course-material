@@ -36,5 +36,7 @@ def solve_with_cvx(A, b, c, with_log=False):
     return {
             'x_value': x.value,
             'dual_value': constraints[0].dual_value,
-            'obj_value': problem.value
+            'obj_value': problem.value,
+            'dual_v': constraints[0].dual_value,
+            'dual_lambda': constraints[1].dual_value,
             }

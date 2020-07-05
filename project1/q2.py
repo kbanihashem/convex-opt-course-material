@@ -75,17 +75,26 @@ def nine_eight(should_plot=False, num_tests=1, random_state=0):
         print(f'{i + 1}th data point')
         data = get_data(m, n, random_state=i + random_state, part='9-12')
         A, b, c = data
-        x, log = infeasible_barrier(*data)
+        x, log, dual_v, dual_lambda = infeasible_barrier(*data)
 
         cvx_output = solve_with_cvx(A, b, c, with_log=False)
         print(f'Our optimal value: {c @ x:.6f}')
         print(f'CVX optimal value: {cvx_output["obj_value"]:.6f}')
         cvx_x = cvx_output['x_value']
+        cvx_v = cvx_output['dual_v']
+        cvx_lambda = cvx_output['dual_lambda']
         relative_error = l2(cvx_x - x) / l2(cvx_x)
+        relative_error_v = l2(cvx_v - dual_v) / l2(cvx_v)
+        relative_error_lambda = l2(cvx_lambda - dual_lambda) / l2(cvx_lambda)
         print(f'Relative error: {relative_error:.6f}')
+        print(f'Relative error v: {relative_error_v:.6f}')
+        print(f'Relative error lambda: {relative_error_lambda:.6f}')
+        print(f'centering steps: {log["center_steps"]}')
+        print(f'newton steps: {log["newton_steps"]}')
 
         if should_plot:
-            plt.plot(log['cumalative_newton'], log['log_duality_gap'], linestyle='--', marker='o')
+#            plt.plot(log['cumalative_newton'], log['log_duality_gap'], linestyle='--', marker='o')
+            plt.step(log['cumalative_newton'], log['log_duality_gap'])
             plt.suptitle('log of duality gap by cumalative newton steps')
             plt.xlabel('cumalative_newton')
             plt.ylabel('log_duality_gap')
@@ -99,7 +108,7 @@ def nine_eight(should_plot=False, num_tests=1, random_state=0):
         print('evaluating mu')
         for i, mu in enumerate(mu_values):
             print('-', end='')
-            x, log = infeasible_barrier(*data, mu=mu)
+            x, log, dual_v, dual_lambda = infeasible_barrier(*data, mu=mu)
             total_steps.append(log['newton_steps'])
             center_steps.append(log['center_steps'])
         

@@ -13,7 +13,7 @@ def f(x, c):
 def grad(x, c):
     return (c - 1/x)
 
-def infeasible_barrier(A, b, c, mu=10, duality_threshold=1e-3, *args, **kwargs):
+def infeasible_barrier(A, b, c, mu=50, duality_threshold=1e-3, *args, **kwargs):
     m, n = A.shape
     x = np.ones(n)
     log = dict()
@@ -33,7 +33,10 @@ def infeasible_barrier(A, b, c, mu=10, duality_threshold=1e-3, *args, **kwargs):
         if m / t < duality_threshold:
             break
         t *= mu
-    return x, log
+
+    dual_v = w / t
+    dual_lambda = 1 / (t * x)
+    return x, log, dual_v, dual_lambda
 
 def infeasible_centering_step(A, b, c, x0, epsilon=1e-8, alpha=0.4, beta=0.7, max_step=50):
     x = x0.copy()
