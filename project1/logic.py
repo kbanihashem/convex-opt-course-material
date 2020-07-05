@@ -38,7 +38,7 @@ def infeasible_barrier(A, b, c, mu=50, duality_threshold=1e-3, *args, **kwargs):
     dual_lambda = 1 / (t * x)
     return x, log, dual_v, dual_lambda
 
-def infeasible_centering_step(A, b, c, x0, epsilon=1e-8, alpha=0.4, beta=0.7, max_step=50):
+def infeasible_centering_step(A, b, c, x0, epsilon=1e-8, alpha=0.4, beta=0.7, max_step=100):
     x = x0.copy()
     log = {
             'r_norm': [],

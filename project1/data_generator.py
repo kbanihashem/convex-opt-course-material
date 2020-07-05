@@ -34,6 +34,7 @@ def solve_with_cvx(A, b, c, with_log=False):
     problem = cp.Problem(obj, constraints)
     problem.solve()
     return {
+            'status': problem.status,
             'x_value': x.value,
             'dual_value': constraints[0].dual_value,
             'obj_value': problem.value,

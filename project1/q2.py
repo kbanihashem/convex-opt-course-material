@@ -3,15 +3,24 @@ from data_generator import *
 
 np.set_printoptions(precision=6, suppress=True)
 
-def eigth_twelve(should_plot=False, num_tests=1, random_state=0):
+def eigth_twelve(should_plot=False, num_tests=1, should_be_unbounded=False, should_be_infeasible=False, random_state=0):
     m = 100
     n = 500
     for i in range(num_tests):
         print(f'{i + 1}th data point')
-        data = get_data(m, n, random_state=i + random_state, part='a')
+        part = 'a'
+        if should_be_infeasible:
+            part = 'c'
+            m, n = n, m
+        data = get_data(m, n, random_state=i + random_state, part=part)
         data = list(data)
         data[-1] = np.ones(n)
         A, b, c, x0 = data
+        if should_be_unbounded:
+            c = -np.abs(c)
+            for j in range(m):
+                A[j,:] = A[j,:] - ((A[j,:] @ c) / (c @ c)) * c
+        data = A, b, c, x0
         x, w, log = infeasible_centering_step(*data)
         r_primal_log = log['r_primal_norm']
         r_dual_log = log['r_dual_norm']
@@ -27,13 +36,16 @@ def eigth_twelve(should_plot=False, num_tests=1, random_state=0):
         print(f'dual_slackness: {dual_slackness:.6f}')
 
         cvx_output = solve_with_cvx(A, b, c, with_log=True)
-        print(f'Our optimal value: {f(x, c):.6f}')
-        print(f'CVX optimal value: {cvx_output["obj_value"]:.6f}')
-        cvx_x = cvx_output['x_value']
-        relative_error = l2(cvx_x - x) / l2(cvx_x)
-        print(f'Relative error: {relative_error:.6f}')
+        print(f'CVX status: {cvx_output["status"]}')
+        if not (should_be_infeasible or should_be_unbounded):
+            print(f'Our optimal value: {f(x, c):.6f}')
+            print(f'CVX optimal value: {cvx_output["obj_value"]:.6f}')
+            cvx_x = cvx_output['x_value']
+            relative_error = l2(cvx_x - x) / l2(cvx_x)
+            print(f'Relative error: {relative_error:.6f}')
 
         #plotting if necessary
+
         if should_plot:
             logs = {
                     'r norm': r_log,
@@ -47,6 +59,9 @@ def eigth_twelve(should_plot=False, num_tests=1, random_state=0):
                 plt.xlabel('iteration')
                 plt.ylabel(f'log({name})')
                 plt.show()
+
+    if should_be_infeasible or should_be_unbounded:
+        return
     #observing the effects of alpha, beta
     if should_plot:
         data = get_data(m, n, random_state=random_state, part='a')
