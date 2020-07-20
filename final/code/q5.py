@@ -14,9 +14,10 @@ constraints = [
         ]
 obj = cp.Minimize(2 * s**2 + 2 * l + np.pi * w)
 problem = cp.Problem(obj, constraints)
-problem.solve()
+problem.solve(solver=cp.ECOS)
 print('status: ', problem.status)
 print('total cost: ', problem.value)
 print('l: ', l.value)
 print('w: ', w.value)
 print('filter size: ', s.value**2)
+
