@@ -67,3 +67,13 @@ def part_b():
     p_transport, v_transport, solver_transport = solve_with_removed_index(get_subystem_indexes(knockout_names[0]))
     p_fatty, v_fatty, solver_fatty = solve_with_removed_index(get_subystem_indexes(knockout_names[1]))
 
+def main():
+    read_data()
+    part_a()
+    part_b()
+    print(p_a.status, p_transport.status, p_fatty.status)
+    print(p_a.value, p_transport.value, p_fatty.value)
+    print(evaluated_diff(v_a.value, v_transport.value), evaluated_diff(v_a.value, v_fatty.value))
+
+if __name__ == '__main__':
+    main()
