@@ -21,14 +21,14 @@ with open("Recon3D.json", "r") as file_handle:
             if id[j] in metabolites[i].keys():
                 S[j, i] = metabolites[i][id[j]];
 
-def solve_with_knockout(knockout=None):
-    u = upper_bound.copy()
-    l = lower_bound.copy()
-    if knockout is not None:
-        for i, col_name in enumerate(name):
-            if col_name in knockout:
-                u[i] = 0
-                l[i] = 0
+def solve_with_removed_index(removed=None, solver=None):
+    solver = solver if solver is not None else cp.ECOS
+    u = np.array(upper_bound.copy())
+    l = np.array(lower_bound.copy())
+    if removed is not None:
+        removed = np.array(removed)
+        u[removed] = 0
+        l[removed] = 0
     m, n = S.shape
     v = cp.Variable(n)
     #part a
@@ -39,5 +39,17 @@ def solve_with_knockout(knockout=None):
             ]
     obj = cp.Maximize(v[-1])
     problem = cp.Problem(obj, constraints)
-    ans = problem.solve()
+    ans = problem.solve(solver=solver)
     return problem, v.value
+
+def get_knockout_index(knockout):
+    return [i for i, sub_name in enumerate(subsystem) if sub_name in knockout]
+
+def get_subystem_indexes(name):
+    return get_knockout_index({name})
+
+knockout = set([
+        'Transport, nuclear',
+        'Fatty acid oxidation',
+        ])
+
