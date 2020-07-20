@@ -1,0 +1,51 @@
+\documentclass[10 pt]{report}
+
+\pagenumbering{arabic}
+
+\usepackage[a4paper,top=2.5cm,left=2.5cm,right=1.5cm,bottom=2.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb}
+\newcommand{\tarc}{\mbox{\large$\frown$}}
+\newcommand{\arc}[1]{\stackrel{\tarc}{#1}}
+\newcommand{\norm}[1]{\left|\left| #1 \right|\right|}
+\newcommand{\on}[2]{\Big|_{#1}^{#2}}
+\newcommand{\inn}[1]{\langle #1\rangle}
+\newcommand{\LO}[1]{\mathcal{L}(#1)}
+\newcommand{\img}{\mathrm{Img }\ }
+\newcommand{\pr}[1]{\left(#1\right)}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\qed}{\hfill $\blacksquare$}
+\newcommand{\ped}{\hfill $\square$}
+\newcommand{\size}[1]{\left|#1\right|}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\conj}[1]{\overline{#1}}
+\newcommand{\spn}[1]{\mathrm{span}\left(#1\right)}
+%\pagestyle{empty}
+\graphicspath{./}
+
+\usepackage{setspace}
+
+\linespread{1.3}
+%\usepackage{multirow}
+\usepackage{amsfonts}
+
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{enumerate}
+
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+
+
+\usepackage{xepersian}
+
+\settextfont[]{XB Niloofar}
+\setdigitfont{Yas}
+\setlatinmonofont[]{Times New Roman}
+
+\begin{document}
+	\input{header}
+	\input{main.tex}
+	
+\end{document}
