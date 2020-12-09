@@ -4,8 +4,8 @@ from data_generator import *
 np.set_printoptions(precision=6, suppress=True)
 
 def eigth_twelve(should_plot=False, num_tests=1, should_be_unbounded=False, should_be_infeasible=False, random_state=0):
-    m = 100
-    n = 500
+    m = 1
+    n = 2
     for i in range(num_tests):
         print(f'{i + 1}th data point')
         part = 'a'
@@ -84,8 +84,8 @@ def eigth_twelve(should_plot=False, num_tests=1, should_be_unbounded=False, shou
         plt.show()
 
 def nine_eight(should_plot=False, num_tests=1, random_state=0):
-    m = 100
-    n = 500
+    m = 1
+    n = 2
     for i in range(num_tests):
         print(f'{i + 1}th data point')
         data = get_data(m, n, random_state=i + random_state, part='9-12')

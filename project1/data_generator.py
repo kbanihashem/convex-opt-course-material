@@ -11,6 +11,14 @@ def get_random_array(shape, method, positive=False):
     return answer
 
 def get_data(m, n, method='normal', random_state=0, part='a'):
+    if part == 'a' or part == 'b' or part == '9-12':
+        A = np.ones((1, 2))
+        b = np.array([1])
+        c = np.array([1, -1])
+        x0 = np.array([2, 3])
+        if part == '9-12':
+            return A, b, c
+        return A, b, c, x0
     np.random.seed(random_state)
     A = get_random_array((m, n), method)
     A[0] = np.abs(A[0])
